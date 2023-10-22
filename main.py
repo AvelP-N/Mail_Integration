@@ -570,12 +570,12 @@ def main():
 
 if __name__ == '__main__':
     init()
-    win32api.SetConsoleTitle('SQL Integration v3.8')
+    win32api.SetConsoleTitle('SQL Integration v3.9')
     print(Back.YELLOW + Fore.BLACK + '   Fill out the integration email form   ' + Style.RESET_ALL)
 
     try:
         with pyodbc.connect('Driver={SQL Server};'
-                            'Server=sqlserver.moscow.kdl-test.ru;'
+                            'Server=Server;'
                             'UID=Login;'
                             'PWD=Password') as connection:
             cursor = connection.cursor()
