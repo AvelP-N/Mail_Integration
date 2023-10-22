@@ -1,0 +1,5 @@
+colorama==0.4.6
+lxml==4.9.2
+pyodbc==4.0.35
+pywin32==305
+xlrd==2.0.1
