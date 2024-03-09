@@ -59,7 +59,7 @@ def main():
             """Если SQL база не вернула результат, то подключаем сетевой диск для поиска XML файла"""
 
             if not os.path.exists('x:/'):
-                os.system('net use x: \\\\croc-integ-05\\Arhiv\\MIS /persistent:yes')
+                os.system('net use x: \\\\path /persistent:yes')
 
         def search_file():
             """Поиск файла XML в указанном каталоге"""
@@ -262,8 +262,8 @@ def main():
                 if check_file_database():
                     return True
             else:
-                os.system(r'NET USE V: "\\ad.kdl-test.ru\shares\Общие документы компании\Клиентская база\Клиентская база new рабочая 14.11.2014" /PERSISTENT:YES')
-                print(Fore.GREEN + r'Connected network drive V: \\ad.kdl-test.ru\shares\Общие документы компании\Клиентская база\Клиентская база new рабочая 14.11.2014' + Fore.RESET)
+                os.system(r'NET USE V: "\\path" /PERSISTENT:YES')
+                print(Fore.GREEN + r'Connected network drive V: \\path' + Fore.RESET)
                 if check_file_database():
                     return True
 
@@ -294,7 +294,7 @@ def main():
             massage = outlook.CreateItem(0)
             massage.Display()
             massage.To = to_massage
-            massage.CC = 'AKhanin@kdl.ru; DTrofimov@kdl.ru'
+            massage.CC = 'mails'
             massage.Subject = f'Состав заказа {number} от отправителя {sender} ::: ' + \
                               ' ::: '.join(set(list_header_email))
 
@@ -312,37 +312,37 @@ def main():
             massage.Display()
 
             if ufa:
-                massage.To = f"ufa-okp@kdl.ru; msk-op@kdl.ru; {to_massage}"
+                massage.To = f"mails; {to_massage}"
             else:
-                massage.To = f"msk-op@kdl.ru; {to_massage}"
+                massage.To = f"mail; {to_massage}"
 
-            massage.CC = 'AKhanin@kdl.ru; DTrofimov@kdl.ru'
+            massage.CC = 'mails'
             massage.Subject = f'Состав заказа {number} от отправителя {sender} ::: ' + \
                               ' ::: '.join(set(list_header_email))
 
         flag = False
         ufa = False
-        sender_exception = {'36VR11531': 'abikchurina@kdl.ru',
-                            '42KM7794': 'nvk-okp@kdl.ru; oms-okp@kdl.ru; nikiforova@kdl.ru',
-                            '42KM9549': 'nvk-okp@kdl.ru; oms-okp@kdl.ru; nikiforova@kdl.ru',
-                            '42BA6694': 'nvk-okp@kdl.ru; oms-okp@kdl.ru; nikiforova@kdl.ru',
-                            '54KY6347': 'msk-op@kdl.ru; EKozhevnikova@kdl.ru; EYurev@kdl.ru',
+        sender_exception = {'36VR11531': 'mail',
+                            '42KM7794': 'mails',
+                            '42KM9549': 'mails',
+                            '42BA6694': 'mails',
+                            '54KY6347': 'mails',
                             '77MS9989': 'Тестовый отправитель! Писать письмо не нужно, можно сразу закрывать заявку.',
                             '77MS9999': 'Тестовый отправитель! Писать письмо не нужно, можно сразу закрывать заявку.'}
 
-        regions = {'KR': 'krr-okp@kdl.ru; krr-preanalytics@kdl.ru',
-                   'PR': 'prm-okp@kdl.ru; prm-preanalytics@kdl.ru',
-                   'KA': 'kzn-okp@kdl.ru; kzn-preanalytics@kdl.ru; kvoropaeva@kdl.ru; imayorova@kdl.ru; shafeev@kdl.ru',
-                   'EK': 'ekb-okp@kdl.ru; ekb-op@kdl.ru',
-                   'VL': 'vgg-okp@kdl.ru; vgg-op@kdl.ru',
-                   'RS': 'rov-preanalytics@kdl.ru; rov-okp@kdl.ru',
-                   'AS': 'asr-okp@kdl.ru; asr-preanalytics@kdl.ru',
-                   'SA': 'sro-preanalytics@kdl.ru; sro-okp@kdl.ru',
-                   'TN': 'tum-okp@kdl.ru; tum-sales@kdl.ru',
-                   'OM': 'oms-preanalytics@kdl.ru; oms-okp@kdl.ru',
-                   'NS': 'nvb-okp@kdl.ru; nvb-preanalytics@kdl.ru',
-                   'NK': 'nvk-okp@kdl.ru; oms-preanalytics@kdl.ru',
-                   'UF': 'ufa-okp@kdl.ru'}
+        regions = {'KR': 'mails',
+                   'PR': 'mails',
+                   'KA': 'mails',
+                   'EK': 'mails',
+                   'VL': 'mails',
+                   'RS': 'mails',
+                   'AS': 'mails',
+                   'SA': 'mails',
+                   'TN': 'mails',
+                   'OM': 'mails',
+                   'NS': 'mails',
+                   'NK': 'mails',
+                   'UF': 'mails'}
 
         # Редактирование отправителя
         edit_sender = sender.split('_')[1]
@@ -376,9 +376,9 @@ def main():
                     print(Fore.GREEN + 'Кому:' + Fore.RESET)
 
                     if ufa:
-                        print(Fore.YELLOW + 'ufa-okp@kdl.ru; msk-op@kdl.ru', end='; ')
+                        print(Fore.YELLOW + 'mails', end='; ')
                     else:
-                        print(Fore.YELLOW + 'msk-op@kdl.ru', end='; ')
+                        print(Fore.YELLOW + 'mails', end='; ')
 
                     list_manager = findall(r'[А-ЯЁ][а-яё]+', str(xls_sheet_clients.cell(index_tuple, 13).value))
                     edit_list_manager = list(filter(lambda i: 'Моб' not in i, list_manager))
@@ -397,7 +397,7 @@ def main():
                         break
             else:
                 print(Fore.GREEN + 'Кому:' + Fore.RESET)
-                print(Fore.YELLOW + 'msk-op@kdl.ru;' + Fore.RESET,
+                print(Fore.YELLOW + 'mail' + Fore.RESET,
                       Fore.RED + 'Manager not found in "Клиентская база"' + Fore.RESET, '\n')
 
     def input_text():
