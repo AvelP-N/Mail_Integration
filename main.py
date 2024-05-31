@@ -294,7 +294,7 @@ def main():
             massage = outlook.CreateItem(0)
             massage.Display()
             massage.To = to_massage
-            massage.CC = 'mails'
+            massage.CC = 'AKhanin@kdl.ru'
             massage.Subject = f'Состав заказа {number} от отправителя {sender} ::: ' + \
                               ' ::: '.join(set(list_header_email))
 
@@ -312,11 +312,11 @@ def main():
             massage.Display()
 
             if ufa:
-                massage.To = f"mails; {to_massage}"
+                massage.To = f"mails"
             else:
-                massage.To = f"mail; {to_massage}"
+                massage.To = f"mails"
 
-            massage.CC = 'mails'
+            massage.CC = 'mail'
             massage.Subject = f'Состав заказа {number} от отправителя {sender} ::: ' + \
                               ' ::: '.join(set(list_header_email))
 
@@ -416,7 +416,7 @@ def main():
                 list_number = findall(r'[19]\d{9}', ' '.join(email_text))
                 if list_number:
                     number = list_number[0]
-                    file_name = findall(r'(?i)\s(\w+)\.xml', string)[0]
+                    file_name = findall(r'(?i)\s([\w-]+)\.xml', string)[0]
 
             # Find folder and save in variable folder
             list_folder = findall(r'\\(\w+?)\\', string)
@@ -570,19 +570,32 @@ def main():
 
 if __name__ == '__main__':
     init()
-    win32api.SetConsoleTitle('SQL Integration v3.9')
+    win32api.SetConsoleTitle('SQL Integration v4.3')
     print(Back.YELLOW + Fore.BLACK + '   Fill out the integration email form   ' + Style.RESET_ALL)
 
+    # Подключение сетевого диска X: где хранятся XML файлы
+    if not os.path.exists('X:'):
+        os.system(r'NET USE X: "path" /PERSISTENT:YES')
+        print(Fore.GREEN + r'Connected network drive X: \\path' + Fore.RESET)
+
+    # Поиск логина и пароля в файле LogoPass.txt
+    login_password = {}
+    with open('LogoPass.txt', encoding='UTF8') as file:
+        for key, value in findall(r'(Login|Password):\s*(\w*)', file.read()):
+            login_password[key] = value
+
+    # Подключение к БД MS SQL Server
     try:
-        with pyodbc.connect('Driver={SQL Server};'
-                            'Server=Server;'
-                            'UID=Login;'
-                            'PWD=Password') as connection:
+        with pyodbc.connect(f'''Driver={{SQL Server}};
+                                Server=sqlserver;
+                                UID={login_password['Login']};
+                                PWD={login_password['Password']}''') as connection:
             cursor = connection.cursor()
     except pyodbc.OperationalError:
         quit(print('*** Server DB not available! ***'))
 
-    with sq.connect(fr'C:\Users\{os.getlogin()}\PycharmProjects\Mail_integration\UsersDB.db') as connectDB:
+    # Подключение к локальной БД DB Browser (SQLite)
+    with sq.connect('UsersDB.db') as connectDB:
         cursor_sq = connectDB.cursor()
 
     try:
